@@ -60,32 +60,35 @@ class Main {
 
 class Solution
 {
-    //Function to return list containing vertices in Topological order. 
-    public static void dfs(int node,ArrayList<ArrayList<Integer>> adj,int[]vis,Stack<Integer>stack){
-        vis[node]=1;
-        for(int it:adj.get(node)){
-            if(vis[it]==0)
-            dfs(it,adj,vis,stack);
-        }
-        stack.push(node);        
-    }
-    static int[] topoSort(int V, ArrayList<ArrayList<Integer>> adj) 
+    //Function to return list containing vertices in Topological order.
+     static int[] topoSort(int V, ArrayList<ArrayList<Integer>> adj) 
     {
-        // add your code here
-        Stack<Integer> stack=new Stack<Integer>();
-        int[] vis=new int[V];
-        for(int i=0;i<V;i++){
-            if(vis[i]==0){
-                dfs(i,adj,vis,stack);
+        int [] indegree  =new int[V];
+        for(int i=0; i<V;i++){
+            for(var nn:adj.get(i)){
+                indegree[nn]++;
             }
         }
-        int[] ans=new int[V];
-        int i=0;
-        while(!stack.isEmpty()){
-            ans[i]=stack.peek();
-            stack.pop();
-            i++;
+        int[] ans = new int[V];
+        int ind =0;
+        Queue<Integer> q = new LinkedList<>();
+        for(int i=0; i<V; i++){
+            if(indegree[i] == 0){
+                q.add(i);
+            }
+        }
+        
+        while(!q.isEmpty()){
+            int nn =q.poll();
+            ans[ind++] = nn;
+            for(var i:adj.get(nn)){
+                indegree[i] -=1;
+                if(indegree[i] == 0){
+                    q.add(i);
+                }
+            }
         }
         return ans;
     }
+    
 }
