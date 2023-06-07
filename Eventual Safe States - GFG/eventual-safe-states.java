@@ -42,36 +42,37 @@ class GFG {
 // User function Template for Java
 
 class Solution {
-    private boolean dfs(int node,List<List<Integer>>adj,int[] vis, int[]pathVis,int[] safeNode){
-        vis[node]=1;
-        pathVis[node]=1;
-        safeNode[node]=0;
-        for(int it:adj.get(node)){
-            if(vis[it]==0){
-                if(dfs(it,adj,vis,pathVis,safeNode)==true)return true;
-            }
-            else if(pathVis[it]==1)return true;
-        }
-        safeNode[node]=1;
-        pathVis[node]=0;
-        return false;
-    }
+
     List<Integer> eventualSafeNodes(int V, List<List<Integer>> adj) {
 
         // Your code here
-        int[] vis=new int[V];
-        int[] pathVis=new int[V];
-        int[] safeNode=new int[V];
+        List<List<Integer>> adjRev=new ArrayList<>();
         for(int i=0;i<V;i++){
-            if(vis[i]==0){
-             dfs(i,adj,vis,pathVis,safeNode);
+            adjRev.add(new ArrayList<>());
+        }
+        int[] indegree=new int[V];
+        for(int i=0;i<V;i++){
+            for(int it:adj.get(i)){
+                indegree[i]++;
+                adjRev.get(it).add(i);
             }
         }
-        List<Integer> safeNodes=new ArrayList<>();
-        for(int i=0;i<V;i++){
-            if(safeNode[i]==1)
-            safeNodes.add(i);
+        Queue<Integer> q=new LinkedList<>();
+        for(int i=0;i<V;i++ ){
+            if(indegree[i]==0)q.add(i);
         }
+        List<Integer> safeNodes=new ArrayList<>();
+        while(!q.isEmpty()){
+            int node=q.peek();
+            q.remove();
+            safeNodes.add(node);
+            for(int it:adjRev.get(node)){
+                indegree[it]--;
+                if(indegree[it]==0)q.add(it);
+            }
+        }
+        Collections.sort(safeNodes);
         return safeNodes;
+        
     }
 }
