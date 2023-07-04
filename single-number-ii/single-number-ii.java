@@ -1,17 +1,15 @@
-class Solution{
-public int singleNumber(int[] nums) {
-    int ans = 0;
-    for(int i = 0; i < 32; i++) {
-        int sum = 0;
-        for(int j = 0; j < nums.length; j++) {
-            if(((nums[j] >> i) & 1) == 1) {
-                sum++;
-                sum %= 3;
-            }
+class Solution {
+    public int singleNumber(int[] nums) {
+        // HashMap<Integer,Integer> map=new HashMap<>();
+
+          Map<Integer,Integer> map = new HashMap();
+        for(int n : nums){
+            map.put(n,map.getOrDefault(n,0) + 1);
         }
-        if(sum != 0) {
-            ans |= sum << i;
-        }
+        // Putting values in priority queue 
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b)->map.get(a) - map.get(b));
+        pq.addAll(map.keySet());
+
+        return pq.poll();
     }
-    return ans;
-}}
+}
